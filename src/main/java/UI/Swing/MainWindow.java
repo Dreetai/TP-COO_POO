@@ -50,6 +50,61 @@ public class MainWindow extends JFrame {
         this.addWindowListener(controleurWindow);
     }
 
+    public void initialiserJFrame() {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel utilisateur_labelPanel = new JPanel(new BorderLayout());
+        JLabel utilisateursConnectesLabel = new JLabel("Online users");
+        utilisateurPanel = new JPanel(new FlowLayout());
+        utilisateurPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        updateUtilisateursConnectes();
+
+        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurPanel);
+        utilisateurScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        utilisateur_labelPanel.add(utilisateursConnectesLabel,BorderLayout.NORTH);
+        utilisateur_labelPanel.add(utilisateurScrollPane,BorderLayout.CENTER);
+
+        conversationPanel = new JPanel(new BorderLayout());
+
+        conversationPseudonymeLabel = new JLabel("");
+        Font font = new Font("Arial",Font.BOLD,15);
+        conversationPseudonymeLabel.setFont(font);
+        messageHistoirePanel = new JPanel(new FlowLayout());
+
+
+        JScrollPane messageScrollPane = new JScrollPane(messageHistoirePanel);
+        messageScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        inputPanel = new JPanel(new FlowLayout());
+
+        conversationPanel.add(conversationPseudonymeLabel, BorderLayout.NORTH);
+        conversationPanel.add(messageScrollPane, BorderLayout.CENTER);
+        conversationPanel.add(inputPanel, BorderLayout.SOUTH);
+
+        JPanel pseudonymePanel = new JPanel(new FlowLayout());
+        JTextField pseudonymeJTextField = new JTextField(20);
+        pseudonymeJLabel = new JLabel(mainUtilisateur.getPseudonyme());
+        pseudonymeJLabel.setLabelFor(pseudonymeJTextField);
+        ((AbstractDocument) pseudonymeJTextField.getDocument()).setDocumentFilter(new CharDocumentFilter());
+        JButton pseudonymeJButton = new JButton("Change Pseudonyme");
+
+
+        pseudonymePanel.add(pseudonymeJLabel);
+        pseudonymePanel.add(pseudonymeJTextField);
+        pseudonymePanel.add(pseudonymeJButton);
+
+        pseudonymeJButton.addActionListener(e -> this.controleurMainWindow.onChangePseudonymeButtonClicked(mainUtilisateur,pseudonymeJTextField.getText()));
+
+        this.add(mainPanel);
+        mainPanel.add(pseudonymePanel, BorderLayout.NORTH);
+        mainPanel.add(utilisateur_labelPanel, BorderLayout.WEST);
+        mainPanel.add(conversationPanel, BorderLayout.CENTER);
+
+    }
+
     public void initialiserConversation(Conversation conversation) {
         //North
         conversationPseudonymeLabel.setText(conversation.getReceiver().getPseudonyme());
@@ -130,54 +185,6 @@ public class MainWindow extends JFrame {
         component.setVisible(true);
     }
 
-    public void initialiserJFrame() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-
-        utilisateurPanel = new JPanel(new FlowLayout());
-        utilisateurPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-
-        updateUtilisateursConnectes();
-
-        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurPanel);
-        utilisateurScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        conversationPanel = new JPanel(new BorderLayout());
-
-        conversationPseudonymeLabel = new JLabel("");
-        messageHistoirePanel = new JPanel(new FlowLayout());
-
-
-        JScrollPane messageScrollPane = new JScrollPane(messageHistoirePanel);
-
-        messageScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        inputPanel = new JPanel(new FlowLayout());
-
-        conversationPanel.add(conversationPseudonymeLabel, BorderLayout.NORTH);
-        conversationPanel.add(messageScrollPane, BorderLayout.CENTER);
-        conversationPanel.add(inputPanel, BorderLayout.SOUTH);
-
-        JPanel pseudonymePanel = new JPanel(new FlowLayout());
-        JTextField pseudonymeJTextField = new JTextField(20);
-        pseudonymeJLabel = new JLabel(mainUtilisateur.getPseudonyme());
-        pseudonymeJLabel.setLabelFor(pseudonymeJTextField);
-        ((AbstractDocument) pseudonymeJTextField.getDocument()).setDocumentFilter(new CharDocumentFilter());
-        JButton pseudonymeJButton = new JButton("Change Pseudonyme");
-
-
-        pseudonymePanel.add(pseudonymeJLabel);
-        pseudonymePanel.add(pseudonymeJTextField);
-        pseudonymePanel.add(pseudonymeJButton);
-
-        pseudonymeJButton.addActionListener(e -> this.controleurMainWindow.onChangePseudonymeButtonClicked(mainUtilisateur,pseudonymeJTextField.getText()));
-
-        this.add(mainPanel);
-        mainPanel.add(pseudonymePanel, BorderLayout.NORTH);
-        mainPanel.add(utilisateurScrollPane, BorderLayout.WEST);
-        mainPanel.add(conversationPanel, BorderLayout.CENTER);
-
-    }
 
     public ArrayList<Utilisateur> getListeConnecte() {
         return listeConnecte;

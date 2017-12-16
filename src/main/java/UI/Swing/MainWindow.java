@@ -70,10 +70,9 @@ public class MainWindow extends JFrame {
         conversationPanel = new JPanel(new BorderLayout());
 
         conversationPseudonymeLabel = new JLabel("");
-        Font font = new Font("Arial",Font.BOLD,15);
-        conversationPseudonymeLabel.setFont(font);
-        messageHistoirePanel = new JPanel(new FlowLayout());
+        conversationPseudonymeLabel.setFont(new Font("Arial",Font.BOLD,15));
 
+        messageHistoirePanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
 
         JScrollPane messageScrollPane = new JScrollPane(messageHistoirePanel);
         messageScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -89,7 +88,7 @@ public class MainWindow extends JFrame {
         pseudonymeJLabel = new JLabel(mainUtilisateur.getPseudonyme());
         pseudonymeJLabel.setLabelFor(pseudonymeJTextField);
         ((AbstractDocument) pseudonymeJTextField.getDocument()).setDocumentFilter(new CharDocumentFilter());
-        JButton pseudonymeJButton = new JButton("Change Pseudonyme");
+        JButton pseudonymeJButton = new JButton("Change pseudonyme");
 
 
         pseudonymePanel.add(pseudonymeJLabel);
@@ -111,25 +110,36 @@ public class MainWindow extends JFrame {
 
         //Center
         messageHistoirePanel.removeAll();
+        messageHistoirePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         this.activeConversation = conversation;
-        int taille = 100;
+        int taille = messageHistoirePanel.getWidth();
         for (Quadruplet messageData : conversation.getHistorique()) {
-            JTextArea message = new JTextArea(5, 20);
+            JTextArea message = new JTextArea();
             message.setText(messageData.getMessage());
             message.setEditable(false);
             message.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             //message.setPreferredSize(new Dimension(300, 50));
             message.setToolTipText(messageData.getHorodatage().toString());
-
+            System.out.println(messageHistoirePanel.getWidth());
+            JPanel panelMessage;
             if(messageData.getSender().equals(mainUtilisateur.getIdentifiant())){
                 message.setBackground(Color.LIGHT_GRAY);
+                panelMessage = new JPanel(new FlowLayout(FlowLayout.RIGHT,15,5));
+                panelMessage.add(message);
+                panelMessage.setPreferredSize(new Dimension(messageHistoirePanel.getWidth(),50));
+                panelMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             }
-            else
+            else{
                 message.setBackground(Color.WHITE);
+                panelMessage = new JPanel(new FlowLayout(FlowLayout.LEFT,15,5));
+                panelMessage.add(message);
+                panelMessage.setPreferredSize(new Dimension(messageHistoirePanel.getWidth(),50));
+                panelMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+            messageHistoirePanel.add(panelMessage);
             taille += 50;
-            messageHistoirePanel.add(message);
         }
-        messageHistoirePanel.setPreferredSize(new Dimension(300,taille));
+        messageHistoirePanel.setPreferredSize(new Dimension(taille,300));
 
         //South
         inputPanel.removeAll();

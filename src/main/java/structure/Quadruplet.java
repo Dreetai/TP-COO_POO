@@ -1,6 +1,5 @@
 package structure;
 
-import java.util.Date;
 
 public class Quadruplet{
 

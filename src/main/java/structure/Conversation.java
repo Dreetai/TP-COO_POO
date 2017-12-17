@@ -14,14 +14,10 @@ public class Conversation {
     private Utilisateur receiver;
 
     public Conversation(Utilisateur utilisateur1,Utilisateur utilisateur2){
-        this.historique = new ArrayList<Quadruplet>();
+        this.historique = new ArrayList<>();
         this.sender = utilisateur1;
         this.receiver = utilisateur2;
         BaseDeDonnees.recupererHistorique(this);
-    }
-
-    public void finirConversation(){
-
     }
 
     public void envoyerMessage(String message) throws Exception{

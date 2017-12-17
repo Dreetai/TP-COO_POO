@@ -156,7 +156,7 @@ public class BaseDeDonnees {
             String [] nextLine;
             while ((nextLine = csvReader.readNext()) != null) {
                 if (nextLine.length == 4){
-                    conversation.ajouterMessage(new Quadruplet(nextLine[0],nextLine[1],nextLine[2],nextLine[3]));
+                    conversation.ajouterMessage(new Quadruplet(nextLine[0].replaceAll("/n","\n"),nextLine[1],nextLine[2],nextLine[3]));
                 }
                 else{
                     throw new InvalidCSVFileException();
@@ -188,11 +188,11 @@ public class BaseDeDonnees {
                             +data.getHorodatage().toString()).split(",");
             writer.writeNext(entries);
             writer.close();*/
-
-            String message = "\n"+data.getMessage()+"," +data.getSender()+","
+            String message = data.getMessage().replaceAll("\n","/n");
+            String donnees = "\n"+message+"," +data.getSender()+","
                     +data.getReceiver()+","
                     +data.getHorodatage().toString();
-            Files.write(Paths.get(filename), message.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(filename), donnees.getBytes(), StandardOpenOption.APPEND);
 
         }catch(Exception e){
         }

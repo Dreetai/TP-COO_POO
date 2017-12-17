@@ -16,14 +16,14 @@ public class ControleurMainWindow {
 
     public void onUtilisateurClicked(Utilisateur utilisateur, Utilisateur clickedUser){
        Conversation conversation = new Conversation(utilisateur,clickedUser);
-       mainWindow.initialiserConversation(conversation);
+       mainWindow.updateActiveConversation(conversation);
     }
 
     public void onSendMessageButtonClicked(Conversation conversation, Quadruplet messageData) {
         if(!messageData.getMessage().equals("")){
             BaseDeDonnees.sauvegarderMessage(conversation,messageData);
             conversation.ajouterMessage(messageData);
-            mainWindow.updateActiveConversation(messageData);
+            mainWindow.updateActiveConversation(conversation);
             UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
             try{
                 udpMessageSenderService.sendMessageOn(conversation.getReceiver().getIPAddress(),conversation.getReceiver().getPort(),
@@ -38,7 +38,7 @@ public class ControleurMainWindow {
     public void onChangePseudonymeButtonClicked(Utilisateur user,String pseudonyme){
         BaseDeDonnees.changerPseudonyme(user,pseudonyme);
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
-        mainWindow.updatePseudonymeLabel(pseudonyme);
+        mainWindow.updatePseudonyme(pseudonyme);
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {
             for(Utilisateur u :liste){

@@ -45,7 +45,7 @@ public class MyThread extends Thread{
                             mainWindow.updateUtilisateursConnectes();
                         else{
                             Utilisateur destinataire = BaseDeDonnees.getUtilisateur(message.split(" ")[0]);
-                            mainWindow.initialiserConversation(new Conversation(mainWindow.getMainUtilisateur(), destinataire));
+                            mainWindow.updateActiveConversation(new Conversation(mainWindow.getMainUtilisateur(), destinataire));
                         }
                     }
                 });

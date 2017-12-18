@@ -21,7 +21,7 @@ public class ControleurWindow extends WindowAdapter {
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {
             for(Utilisateur u :liste){
-                if(!u.getPseudonyme().equals(mainWindow.getMainUtilisateur().getPseudonyme())) {
+                if(!u.getIdentifiant().equals(mainWindow.getMainUtilisateur().getIdentifiant())) {
                     udpMessageSenderService.sendMessageOn(u.getIPAddress(), u.getPort(), "");
                     System.out.println("message fin envoyé a " + u.getPseudonyme());
                 }

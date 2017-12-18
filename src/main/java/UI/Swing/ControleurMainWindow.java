@@ -30,25 +30,6 @@ public class ControleurMainWindow {
         }
     }
 
-    public void onSendMessageSalonButtonClicked(Salon salon, Quadruplet messageData) {
-        if(!messageData.getMessage().equals("")){
-            BaseDeDonnees.sauvegarderMessageSalon(salon, messageData);
-            salon.ajouterMessage(messageData);
-            mainWindow.updateActiveSalon(salon);
-            UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
-            try{
-                udpMessageSenderService.sendMessageOn(salon.getIpAdresse(),salon.getPort(),
-                        messageData.getSender()+" "+messageData.getMessage());
-            }
-            catch (Exception e){}
-        }
-    }
-
-    public void onSalonClicked(String nom) {
-        Salon salon = new Salon(nom,"239.0.0.1");
-        mainWindow.updateActiveSalon(salon);
-    }
-
     public void onChangePseudonymeButtonClicked(Utilisateur user,String pseudonyme){
         BaseDeDonnees.changerPseudonyme(user,pseudonyme);
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
@@ -56,7 +37,7 @@ public class ControleurMainWindow {
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {
             for(Utilisateur u :liste){
-                if(!u.getPseudonyme().equals(mainWindow.getMainUtilisateur().getPseudonyme())) {
+                if(!u.getIdentifiant().equals(mainWindow.getMainUtilisateur().getIdentifiant())) {
                     udpMessageSenderService.sendMessageOn(u.getIPAddress(), u.getPort(),"");
                     System.out.println("message envoyé a "+u.getPseudonyme());
                 }

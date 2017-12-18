@@ -145,32 +145,6 @@ public class BaseDeDonnees {
         return true;
     }
 
-    public static void recupererHistoriqueSalon(Salon salon){
-        try (
-                Reader reader = Files.newBufferedReader(Paths.get(salon.getNom()+".csv"));
-                CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-        ) {
-            String [] nextLine;
-            while ((nextLine = csvReader.readNext()) != null) {
-                if (nextLine.length == 3){
-                    salon.ajouterMessage(new Quadruplet(nextLine[0].replaceAll("/n","\n"),nextLine[1],null,nextLine[3]));
-                }
-                else{
-                    throw new InvalidCSVFileException();
-                }
-            }
-            reader.close();
-        }
-        catch (Exception e){
-            try{
-                String path= salon.getNom()+".csv";
-                BufferedWriter writer = new BufferedWriter(new FileWriter(new File(path)));
-                String init = "Message Expediteur Date";
-                Files.write(Paths.get(path), init.getBytes(), StandardOpenOption.APPEND);
-                writer.close();
-            }catch (Exception ed){}
-        }
-    }
 
     // Lire/creer fichier "UTILISATEUR1_UTILISATEUR2.csv" et ajouter les messages historiques dans Conversation
     public static void recupererHistorique(Conversation conversation) {
@@ -220,15 +194,6 @@ public class BaseDeDonnees {
                     +data.getHorodatage().toString();
             Files.write(Paths.get(filename), donnees.getBytes(), StandardOpenOption.APPEND);
 
-        }catch(Exception e){}
-    }
-
-    public static void sauvegarderMessageSalon(Salon salon, Quadruplet data){
-        String filename = salon.getNom()+".csv";
-        String message = data.getMessage().replaceAll("\n","/n");
-        String donnees = "\n"+message+"," +data.getSender()+"," +data.getHorodatage().toString();
-        try {
-            Files.write(Paths.get(filename), donnees.getBytes(), StandardOpenOption.APPEND);
         }catch(Exception e){}
     }
 

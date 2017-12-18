@@ -24,7 +24,7 @@ public class MyThread extends Thread{
         ArrayList <Utilisateur> liste = mainWindow.getListeConnecte();
         try {
             for(Utilisateur u :liste){
-                if(!u.getPseudonyme().equals(mainWindow.getMainUtilisateur().getPseudonyme())) {
+                if(!u.getIdentifiant().equals(mainWindow.getMainUtilisateur().getIdentifiant())) {
                     udpMessageSenderService.sendMessageOn(u.getIPAddress(), u.getPort(), "");
                     System.out.println("message envoyé a " + u.getPseudonyme());
                 }
@@ -38,15 +38,12 @@ public class MyThread extends Thread{
     public void run() {
         while (true){
             try {
-                udpMessageReceiverService.listenOnPort(port, new IncomingMessageListener() {
-                    @Override
-                    public void onNewIncomingMessage(String message) {
-                        if(message.equals(""))
-                            mainWindow.updateUtilisateursConnectes();
-                        else{
-                            Utilisateur destinataire = BaseDeDonnees.getUtilisateur(message.split(" ")[0]);
-                            mainWindow.updateActiveConversation(new Conversation(mainWindow.getMainUtilisateur(), destinataire));
-                        }
+                udpMessageReceiverService.listenOnPort(port, message -> {
+                    if(message.equals(""))
+                        mainWindow.updateUtilisateursConnectes();
+                    else{
+                        Utilisateur destinataire = BaseDeDonnees.getUtilisateur(message.split(" ")[0]);
+                        mainWindow.updateActiveConversation(new Conversation(mainWindow.getMainUtilisateur(), destinataire));
                     }
                 });
             } catch (Exception e) {

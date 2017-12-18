@@ -3,10 +3,7 @@ package UI.Swing;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
 import communication.UDPMessageSenderService;
-import structure.BaseDeDonnees;
-import structure.Conversation;
-import structure.Quadruplet;
-import structure.Utilisateur;
+import structure.*;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -30,7 +27,7 @@ public class MainWindow extends JFrame {
     private JPanel messageHistoirePanel;
     private JLabel conversationPseudonymeLabel;
     private JPanel inputPanel;
-    private JPanel utilisateurPanel;
+    private JPanel utilisateurDisponibleJPanel;
     private JLabel pseudonymeJLabel;
     private JTextField pseudonymeJTextField;
     private JScrollPane messageScrollPane;
@@ -59,20 +56,58 @@ public class MainWindow extends JFrame {
         mainPanel.setLayout(new BorderLayout());
 
         //-----------------------WEST------------------------//
-        JPanel utilisateur_labelPanel = new JPanel(new BorderLayout());
-        JLabel utilisateursConnectesLabel = new JLabel("Online users");
-        utilisateurPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-        utilisateurPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        //-----------------------WEST PART Salon------------------------//
+        JPanel salonJPanel = new JPanel(new BorderLayout());
+        JLabel salonJLabel = new JLabel("Salon");
+        JPanel salonDisponibleJPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        salonDisponibleJPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        JButton salon1JButton = new JButton("Salon1");
+        salon1JButton.setPreferredSize(new Dimension(85, 40));
+        salon1JButton.addActionListener(e -> this.controleurMainWindow.onSalonClicked(salon1JButton.getText()));
+        salonDisponibleJPanel.add(salon1JButton);
+        JButton salon2JButton = new JButton("Salon2");
+        salon2JButton.setPreferredSize(new Dimension(85, 40));
+        salon2JButton.addActionListener(e -> this.controleurMainWindow.onSalonClicked(salon2JButton.getText()));
+        salonDisponibleJPanel.add(salon2JButton);
+        JButton salon3JButton = new JButton("Salon3");
+        salon3JButton.setPreferredSize(new Dimension(85, 40));
+        salon3JButton.addActionListener(e -> this.controleurMainWindow.onSalonClicked(salon3JButton.getText()));
+        salonDisponibleJPanel.add(salon3JButton);
+        JButton salon4JButton = new JButton("Salon4");
+        salon4JButton.setPreferredSize(new Dimension(85, 40));
+        salon4JButton.addActionListener(e -> this.controleurMainWindow.onSalonClicked(salon4JButton.getText()));
+        salonDisponibleJPanel.add(salon4JButton);
+        salonDisponibleJPanel.setPreferredSize(new Dimension(100,4*50));
 
+
+        JScrollPane salonJScrollPane = new JScrollPane(salonDisponibleJPanel);
+        salonJScrollPane.setPreferredSize(new Dimension(110,240));
+        salonJScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        salonJScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        salonJPanel.add(salonJLabel,BorderLayout.NORTH);
+        salonJPanel.add(salonJScrollPane,BorderLayout.CENTER);
+
+        //-----------------------WEST PART Utilisateur------------------------//
+        JPanel utilisateurJPanel = new JPanel(new BorderLayout());
+        JLabel utilisateursJLabel = new JLabel("Online users");
+        utilisateurDisponibleJPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        utilisateurDisponibleJPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         updateUtilisateursConnectes();
 
-        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurPanel);
-        utilisateurScrollPane.setPreferredSize(new Dimension(110,400));
+        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurDisponibleJPanel);
+        utilisateurScrollPane.setPreferredSize(new Dimension(110,240));
         utilisateurScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         utilisateurScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        utilisateur_labelPanel.add(utilisateursConnectesLabel,BorderLayout.NORTH);
-        utilisateur_labelPanel.add(utilisateurScrollPane,BorderLayout.CENTER);
+        utilisateurJPanel.add(utilisateursJLabel,BorderLayout.NORTH);
+        utilisateurJPanel.add(utilisateurScrollPane,BorderLayout.CENTER);
+
+
+        JPanel onlineJPanel = new JPanel();
+        onlineJPanel.setPreferredSize(new Dimension(110,600));
+        onlineJPanel.add(salonJPanel);
+        onlineJPanel.add(utilisateurJPanel);
 
         //-----------------------CENTER------------------------//
         conversationPanel = new JPanel(new BorderLayout());
@@ -109,10 +144,67 @@ public class MainWindow extends JFrame {
 
 
         mainPanel.add(pseudonymePanel, BorderLayout.NORTH);
-        mainPanel.add(utilisateur_labelPanel, BorderLayout.WEST);
+        mainPanel.add(onlineJPanel, BorderLayout.WEST);
         mainPanel.add(conversationPanel, BorderLayout.CENTER);
         this.add(mainPanel);
 
+    }
+
+    public void updateActiveSalon(Salon salon){
+        //North
+        conversationPseudonymeLabel.setText(salon.getNom());
+
+        //Center
+        messageHistoirePanel.removeAll();
+        messageHistoirePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        int taille = 0;
+        for (Quadruplet messageData : salon.getHistorique()) {
+            JTextArea message = new JTextArea();
+            message.setText(messageData.getMessage());
+            message.setEditable(false);
+            message.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            message.setToolTipText(messageData.getHorodatage().toString());
+            FontMetrics metrics = getFontMetrics(message.getFont());
+            int hgt = (metrics.getHeight())*message.getText().split("\n").length;
+            JPanel panelMessage;
+            if(messageData.getSender().equals(mainUtilisateur.getIdentifiant())){
+                message.setBackground(Color.LIGHT_GRAY);
+                panelMessage = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
+            }
+            else{
+                message.setBackground(Color.WHITE);
+                panelMessage = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+            }
+            panelMessage.add(message);
+            panelMessage.setPreferredSize(new Dimension(625, hgt+15));
+            panelMessage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            messageHistoirePanel.add(panelMessage);
+            taille += hgt+25;
+
+        }
+        taille = Math.min(600,taille);
+        messageHistoirePanel.setPreferredSize(new Dimension(0,taille));
+
+
+
+        //South
+        inputPanel.removeAll();
+        JTextArea inputTextField = new JTextArea(5, 40);
+        JScrollPane scrollPaneJTextArea = new JScrollPane(inputTextField);
+        inputTextField.setLineWrap(true);
+        inputTextField.setWrapStyleWord(true);
+        inputTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        //inputTextField.setPreferredSize(new Dimension(200, 100));
+        JButton sendMessageButton = new JButton("Send");
+        sendMessageButton.addActionListener(e -> this.controleurMainWindow.onSendMessageButtonClicked(this.activeConversation,
+                new Quadruplet(reformateString(inputTextField.getText()), this.mainUtilisateur.getIdentifiant(),
+                        this.activeConversation.getReceiver().getIdentifiant(), new Date().toString())));
+        inputPanel.add(scrollPaneJTextArea);
+        inputPanel.add(sendMessageButton);
+
+        repaint(conversationPanel);
     }
 
     public void updateActiveConversation(Conversation conversation) {
@@ -182,13 +274,13 @@ public class MainWindow extends JFrame {
 
     public void updateUtilisateursConnectes() {
         listeConnecte = BaseDeDonnees.recupererLocalAgents();
-        utilisateurPanel.removeAll();
+        utilisateurDisponibleJPanel.removeAll();
         for (Utilisateur utilisateur : listeConnecte) {
-            if(!utilisateur.getPseudonyme().equals(mainUtilisateur.getPseudonyme())) {
+            if(!utilisateur.getIdentifiant().equals(mainUtilisateur.getIdentifiant())) {
                 JButton newUtilisateur = new JButton(utilisateur.getPseudonyme());
-                newUtilisateur.setPreferredSize(new Dimension(80, 40));
+                newUtilisateur.setPreferredSize(new Dimension(85, 40));
                 newUtilisateur.addActionListener(e -> this.controleurMainWindow.onUtilisateurClicked(this.mainUtilisateur, utilisateur));
-                utilisateurPanel.add(newUtilisateur);
+                utilisateurDisponibleJPanel.add(newUtilisateur);
             }
             if(activeConversation != null){
                 if(utilisateur.getIdentifiant().equals(activeConversation.getReceiver().getIdentifiant())) {
@@ -197,8 +289,8 @@ public class MainWindow extends JFrame {
             }
         }
 
-        utilisateurPanel.setPreferredSize(new Dimension(100,(listeConnecte.size()-1)*50));
-        repaint(utilisateurPanel);
+        utilisateurDisponibleJPanel.setPreferredSize(new Dimension(100,(listeConnecte.size()-1)*50));
+        repaint(utilisateurDisponibleJPanel);
     }
 
     private static void repaint (Component component){

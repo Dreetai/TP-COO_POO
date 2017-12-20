@@ -37,9 +37,9 @@ public class BaseDeDonnees {
     }
 
 
-    public static ArrayList<LoginUtilisateur> recupererUtilisateurs(){
+    public static ArrayList<LoginUtilisateur> recupererLoginUtilisateurs(){
         try  {
-            Reader reader = Files.newBufferedReader(Paths.get("login.csv"));
+            Reader reader = Files.newBufferedReader(Paths.get("login_information.csv"));
             CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
             ArrayList<LoginUtilisateur> listeUtilisateurs = new ArrayList<>();
             String[] nextLine;
@@ -53,7 +53,6 @@ public class BaseDeDonnees {
             csvReader.close();
             return listeUtilisateurs;
         } catch (Exception e) {
-
     }
         return null;
     }
@@ -71,10 +70,10 @@ public class BaseDeDonnees {
         writer.close();*/
     }
 
-    public static void addUtilisateur(LoginUtilisateur user) {
+    public static void addLoginUtilisateur(LoginUtilisateur user) {
         String utilisateurString = "\n"+user.getIdentifiant()+","+user.getMotDePasse()+","+user.getPseudonyme();
         try {
-            Files.write(Paths.get("login.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,7 +102,7 @@ public class BaseDeDonnees {
     }
 
     public static void updateLoginUtilisateur(Utilisateur user){
-        ArrayList<LoginUtilisateur> listeUtilisateur = recupererUtilisateurs();
+        ArrayList<LoginUtilisateur> listeUtilisateur = recupererLoginUtilisateurs();
         LoginUtilisateur toDelete = null;
         for(LoginUtilisateur userExamine : listeUtilisateur){
             if (userExamine.getIdentifiant().equals(user.getIdentifiant())){
@@ -113,20 +112,20 @@ public class BaseDeDonnees {
         listeUtilisateur.remove(toDelete);
         try {
             String firstLine = "Identifiant Password Pseudonyme";
-            Files.write(Paths.get("login.csv"), firstLine.getBytes());
+            Files.write(Paths.get("login_information.csv"), firstLine.getBytes());
             for(LoginUtilisateur userExamine2 : listeUtilisateur){
                 String utilisateurString = "\n"+userExamine2.getIdentifiant()+","+userExamine2.getMotDePasse()+","+userExamine2.getPseudonyme();
-                Files.write(Paths.get("login.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+                Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
             }
             String utilisateurString = "\n"+toDelete.getIdentifiant()+","+toDelete.getMotDePasse()+","+user.getPseudonyme();
-            Files.write(Paths.get("login.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static LoginUtilisateur testerSiLoginOK(String identifiant, String password){
-        ArrayList<LoginUtilisateur> listeUtilisateurs = recupererUtilisateurs();
+        ArrayList<LoginUtilisateur> listeUtilisateurs = recupererLoginUtilisateurs();
         for (LoginUtilisateur user : listeUtilisateurs) {
             if (identifiant.equals(user.getIdentifiant()) && user.getMotDePasse().equals(password)) {
                 return user;
@@ -136,7 +135,7 @@ public class BaseDeDonnees {
     }
 
     public static boolean testerSiAddUserOK(String identifiant){
-        ArrayList<LoginUtilisateur> listeUtilisateurs = recupererUtilisateurs();
+        ArrayList<LoginUtilisateur> listeUtilisateurs = recupererLoginUtilisateurs();
         for (LoginUtilisateur user : listeUtilisateurs){
             if(identifiant.equals(user.getIdentifiant())){
                 return false;

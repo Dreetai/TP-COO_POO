@@ -37,7 +37,7 @@ public class ControleurIdentification {
         if(!identifiant.equals("") && !password.equals("")){
             if(BaseDeDonnees.testerSiAddUserOK(identifiant)){
                 LoginUtilisateur loginUser = new LoginUtilisateur(identifiant,password,identifiant);
-                BaseDeDonnees.addUtilisateur(loginUser);
+                BaseDeDonnees.addLoginUtilisateur(loginUser);
                 Utilisateur user = new Utilisateur(identifiant);
                 BaseDeDonnees.addPseudonyme(user);
                 new MainWindow(user);

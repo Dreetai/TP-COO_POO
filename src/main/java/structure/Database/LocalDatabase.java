@@ -46,20 +46,17 @@ public class LocalDatabase {
 
     public static void deleteUtilisateurLocal(Utilisateur user){
         ArrayList<Utilisateur> listeConnecte = recupererLocalAgents();
-        Utilisateur toDelete = null;
         for(Utilisateur userExamine : listeConnecte){
             if (userExamine.getIdentifiant().equals(user.getIdentifiant())){
-                toDelete = userExamine;
+                listeConnecte.remove(userExamine);
+                break;
             }
         }
-        listeConnecte.remove(toDelete);
         try {
             String firstLine = "Identification Pseudonyme AdresseIP Port";
             Files.write(Paths.get("pseudonyme.csv"), firstLine.getBytes());
             for(Utilisateur userExamine2 : listeConnecte){
-                String utilisateurString = "\n"+userExamine2.getIdentifiant()+","+userExamine2.getPseudonyme()+","+userExamine2.getIPAddress()+","+userExamine2.getPort();
-
-                Files.write(Paths.get("pseudonyme.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+                addUtilisateurLocal(userExamine2);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +64,6 @@ public class LocalDatabase {
     }
 
     public static Utilisateur getUtilisateur(String identifiant){
-        Utilisateur user = null;
         try {
             Reader reader = Files.newBufferedReader(Paths.get("pseudonyme.csv"));
             CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
@@ -76,16 +72,15 @@ public class LocalDatabase {
             while ((nextLine = csvReader.readNext()) != null) {
                 if (nextLine.length == 4) {
                     if(nextLine[0].equals(identifiant))
-                        user = new Utilisateur(nextLine[0], nextLine[1],nextLine[2],Integer.valueOf(nextLine[3]));
+                        return new Utilisateur(nextLine[0], nextLine[1],nextLine[2],Integer.valueOf(nextLine[3]));
                 } else {
                     throw new InvalidCSVFileException();
                 }
             }
             csvReader.close();
         } catch (Exception e) {
-
         }
-        return user;
+        return null;
     }
 
     public static void changerPseudonyme(Utilisateur user, String pseudonyme){

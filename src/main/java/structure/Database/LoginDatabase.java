@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import structure.InvalidCSVFileException;
 import structure.LoginUtilisateur;
-import structure.Utilisateur;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -50,18 +49,16 @@ public class LoginDatabase {
         for(LoginUtilisateur userExamine : listeUtilisateur){
             if (userExamine.getIdentifiant().equals(identifiant)){
                 toDelete = userExamine;
+                listeUtilisateur.remove(toDelete);
             }
         }
-        listeUtilisateur.remove(toDelete);
         try {
             String firstLine = "Identifiant Password Pseudonyme";
             Files.write(Paths.get("login_information.csv"), firstLine.getBytes());
             for(LoginUtilisateur userExamine2 : listeUtilisateur){
-                String utilisateurString = "\n"+userExamine2.getIdentifiant()+","+userExamine2.getMotDePasse()+","+userExamine2.getPseudonyme();
-                Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+                addLoginUtilisateur(userExamine2.getIdentifiant(),userExamine2.getMotDePasse(),userExamine2.getPseudonyme());
             }
-            String utilisateurString = "\n"+toDelete.getIdentifiant()+","+toDelete.getMotDePasse()+","+newPseudonyme;
-            Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
+            addLoginUtilisateur(toDelete.getIdentifiant(),toDelete.getMotDePasse(),newPseudonyme);
         } catch (IOException e) {
             e.printStackTrace();
         }

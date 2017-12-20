@@ -26,8 +26,6 @@ public class TestBaseDeDonnees {
     private static final ArrayList<Utilisateur> localContents = LocalDatabase.recupererLocalAgents();
     private static final ArrayList<LoginUtilisateur> loginContents = LoginDatabase.recupererLoginUtilisateurs();
 
-    private ByteArrayOutputStream out;
-
     @Before
     public void setUp() throws IOException{
         String firstLine = "Identifiant Password Pseudonyme";

@@ -55,7 +55,7 @@ public class BaseDeDonnees {
     }
         return null;
     }
-    public static void addPseudonyme(Utilisateur user)  {
+    public static void addUtilisateurLocal(Utilisateur user)  {
         try {
             String utilisateurString = "\n"+user.getIdentifiant()+","+user.getPseudonyme()+","+user.getIPAddress()+","+user.getPort();
             Files.write(Paths.get("pseudonyme.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
@@ -64,8 +64,8 @@ public class BaseDeDonnees {
         }
     }
 
-    public static void addLoginUtilisateur(String identifiant,String password) {
-        String utilisateurString = "\n"+identifiant+","+password+","+identifiant;
+    public static void addLoginUtilisateur(String identifiant,String password,String pseudonyme) {
+        String utilisateurString = "\n"+identifiant+","+password+","+pseudonyme;
         try {
             Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class BaseDeDonnees {
         }
     }
 
-    public static void deleteUtilisateur(Utilisateur user){
+    public static void deleteUtilisateurLocal(Utilisateur user){
         ArrayList<Utilisateur> listeConnecte = recupererLocalAgents();
         Utilisateur toDelete = null;
         for(Utilisateur userExamine : listeConnecte){
@@ -95,7 +95,7 @@ public class BaseDeDonnees {
         }
     }
 
-    public static void updateLoginUtilisateur(String newPseudonyme, String identifiant){
+    public static void updateLoginUtilisateur(String identifiant, String newPseudonyme){
         ArrayList<LoginUtilisateur> listeUtilisateur = recupererLoginUtilisateurs();
         LoginUtilisateur toDelete = null;
         for(LoginUtilisateur userExamine : listeUtilisateur){
@@ -118,14 +118,14 @@ public class BaseDeDonnees {
         }
     }
 
-    public static LoginUtilisateur testerSiLoginOK(String identifiant, String password){
+    public static boolean testerSiLoginOK(String identifiant, String password){
         ArrayList<LoginUtilisateur> listeUtilisateurs = recupererLoginUtilisateurs();
         for (LoginUtilisateur user : listeUtilisateurs) {
             if (identifiant.equals(user.getIdentifiant()) && user.getMotDePasse().equals(password)) {
-                return user;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     public static boolean testerSiAddUserOK(String identifiant){
@@ -219,10 +219,20 @@ public class BaseDeDonnees {
         return user;
     }
 
+    public static String getPseudonyme(String identifiant){
+        ArrayList<LoginUtilisateur> loginUtilisateurArrayList = recupererLoginUtilisateurs();
+        for (LoginUtilisateur user : loginUtilisateurArrayList){
+            if (user.getIdentifiant().equals(identifiant)){
+                return user.getPseudonyme();
+            }
+        }
+        return null;
+    }
+
     public static void changerPseudonyme(Utilisateur user, String pseudonyme){
-        deleteUtilisateur(user);
+        deleteUtilisateurLocal(user);
         user.setPseudonyme(pseudonyme);
-        addPseudonyme(user);
+        addUtilisateurLocal(user);
         updateLoginUtilisateur(user.getIdentifiant(),pseudonyme);
 
     }

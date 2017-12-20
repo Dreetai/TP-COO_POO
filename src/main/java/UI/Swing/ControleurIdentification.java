@@ -17,10 +17,9 @@ public class ControleurIdentification {
 
     public void onConnectButtonClicked(String identifiant, String password){
         if(!identifiant.equals("") && !password.equals("")){
-            LoginUtilisateur loginUser = BaseDeDonnees.testerSiLoginOK(identifiant,password);
-            if(loginUser != null){
-                Utilisateur user = new Utilisateur(identifiant,loginUser.getPseudonyme());
-                BaseDeDonnees.addPseudonyme(user);
+            if(BaseDeDonnees.testerSiLoginOK(identifiant,password)){
+                Utilisateur user = new Utilisateur(identifiant,BaseDeDonnees.getPseudonyme(identifiant));
+                BaseDeDonnees.addUtilisateurLocal(user);
                 new MainWindow(user);
                 this.startWindow.dispose();
             }else{
@@ -36,9 +35,9 @@ public class ControleurIdentification {
     public void onSignUpButtonClicked(String identifiant, String password){
         if(!identifiant.equals("") && !password.equals("")){
             if(BaseDeDonnees.testerSiAddUserOK(identifiant)){
-                BaseDeDonnees.addLoginUtilisateur(identifiant,password);
+                BaseDeDonnees.addLoginUtilisateur(identifiant,password,identifiant);
                 Utilisateur user = new Utilisateur(identifiant);
-                BaseDeDonnees.addPseudonyme(user);
+                BaseDeDonnees.addUtilisateurLocal(user);
                 new MainWindow(user);
                 this.startWindow.dispose();
             }else{

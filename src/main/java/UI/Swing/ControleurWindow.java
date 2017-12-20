@@ -16,7 +16,7 @@ public class ControleurWindow extends WindowAdapter {
     }
 
     public void windowClosing(WindowEvent e) {
-        BaseDeDonnees.deleteUtilisateur(this.mainWindow.getMainUtilisateur());
+        BaseDeDonnees.deleteUtilisateurLocal(this.mainWindow.getMainUtilisateur());
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {

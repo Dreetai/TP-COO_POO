@@ -3,10 +3,7 @@ package UI.Swing;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
 import communication.UDPMessageSenderService;
-import structure.BaseDeDonnees;
-import structure.Conversation;
-import structure.Quadruplet;
-import structure.Utilisateur;
+import structure.*;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -30,10 +27,11 @@ public class MainWindow extends JFrame {
     private JPanel messageHistoirePanel;
     private JLabel conversationPseudonymeLabel;
     private JPanel inputPanel;
-    private JPanel utilisateurPanel;
+    private JPanel utilisateurDisponibleJPanel;
     private JLabel pseudonymeJLabel;
     private JTextField pseudonymeJTextField;
     private JScrollPane messageScrollPane;
+
 
     public MainWindow(Utilisateur mainUtilisateur) {
         this.mainUtilisateur = mainUtilisateur;
@@ -59,20 +57,21 @@ public class MainWindow extends JFrame {
         mainPanel.setLayout(new BorderLayout());
 
         //-----------------------WEST------------------------//
-        JPanel utilisateur_labelPanel = new JPanel(new BorderLayout());
-        JLabel utilisateursConnectesLabel = new JLabel("Online users");
-        utilisateurPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-        utilisateurPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
+        JPanel utilisateurJPanel = new JPanel(new BorderLayout());
+        JLabel utilisateursJLabel = new JLabel("Online users");
+        utilisateurDisponibleJPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        utilisateurDisponibleJPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         updateUtilisateursConnectes();
 
-        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurPanel);
-        utilisateurScrollPane.setPreferredSize(new Dimension(110,400));
+        JScrollPane utilisateurScrollPane = new JScrollPane(utilisateurDisponibleJPanel);
+        utilisateurScrollPane.setPreferredSize(new Dimension(110,580));
         utilisateurScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         utilisateurScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        utilisateur_labelPanel.add(utilisateursConnectesLabel,BorderLayout.NORTH);
-        utilisateur_labelPanel.add(utilisateurScrollPane,BorderLayout.CENTER);
+        utilisateurJPanel.add(utilisateursJLabel,BorderLayout.NORTH);
+        utilisateurJPanel.add(utilisateurScrollPane,BorderLayout.CENTER);
+
 
         //-----------------------CENTER------------------------//
         conversationPanel = new JPanel(new BorderLayout());
@@ -109,7 +108,7 @@ public class MainWindow extends JFrame {
 
 
         mainPanel.add(pseudonymePanel, BorderLayout.NORTH);
-        mainPanel.add(utilisateur_labelPanel, BorderLayout.WEST);
+        mainPanel.add(utilisateurJPanel, BorderLayout.WEST);
         mainPanel.add(conversationPanel, BorderLayout.CENTER);
         this.add(mainPanel);
 
@@ -182,13 +181,13 @@ public class MainWindow extends JFrame {
 
     public void updateUtilisateursConnectes() {
         listeConnecte = BaseDeDonnees.recupererLocalAgents();
-        utilisateurPanel.removeAll();
+        utilisateurDisponibleJPanel.removeAll();
         for (Utilisateur utilisateur : listeConnecte) {
-            if(!utilisateur.getPseudonyme().equals(mainUtilisateur.getPseudonyme())) {
+            if(!utilisateur.getIdentifiant().equals(mainUtilisateur.getIdentifiant())) {
                 JButton newUtilisateur = new JButton(utilisateur.getPseudonyme());
-                newUtilisateur.setPreferredSize(new Dimension(80, 40));
+                newUtilisateur.setPreferredSize(new Dimension(85, 40));
                 newUtilisateur.addActionListener(e -> this.controleurMainWindow.onUtilisateurClicked(this.mainUtilisateur, utilisateur));
-                utilisateurPanel.add(newUtilisateur);
+                utilisateurDisponibleJPanel.add(newUtilisateur);
             }
             if(activeConversation != null){
                 if(utilisateur.getIdentifiant().equals(activeConversation.getReceiver().getIdentifiant())) {
@@ -197,8 +196,8 @@ public class MainWindow extends JFrame {
             }
         }
 
-        utilisateurPanel.setPreferredSize(new Dimension(100,(listeConnecte.size()-1)*50));
-        repaint(utilisateurPanel);
+        utilisateurDisponibleJPanel.setPreferredSize(new Dimension(100,(listeConnecte.size()-1)*50));
+        repaint(utilisateurDisponibleJPanel);
     }
 
     private static void repaint (Component component){
@@ -221,4 +220,5 @@ public class MainWindow extends JFrame {
         pseudonymeJTextField.setText("");
 
     }
+
 }

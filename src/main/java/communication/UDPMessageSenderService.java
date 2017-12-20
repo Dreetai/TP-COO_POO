@@ -1,6 +1,5 @@
 package communication;
 
-import java.io.PrintWriter;
 import java.net.*;
 
 public class UDPMessageSenderService implements MessageSenderService {

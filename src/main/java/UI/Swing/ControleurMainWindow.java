@@ -1,10 +1,7 @@
 package UI.Swing;
 
 import communication.UDPMessageSenderService;
-import structure.BaseDeDonnees;
-import structure.Conversation;
-import structure.Quadruplet;
-import structure.Utilisateur;
+import structure.*;
 
 import java.util.ArrayList;
 
@@ -29,9 +26,7 @@ public class ControleurMainWindow {
                 udpMessageSenderService.sendMessageOn(conversation.getReceiver().getIPAddress(),conversation.getReceiver().getPort(),
                         conversation.getSender().getIdentifiant()+" "+messageData.getMessage());
             }
-            catch (Exception e){
-
-            }
+            catch (Exception e){}
         }
     }
 
@@ -42,8 +37,10 @@ public class ControleurMainWindow {
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {
             for(Utilisateur u :liste){
-                udpMessageSenderService.sendMessageOn(u.getIPAddress(), u.getPort(),"");
-                System.out.println("message envoyé a "+u.getPseudonyme());
+                if(!u.getIdentifiant().equals(mainWindow.getMainUtilisateur().getIdentifiant())) {
+                    udpMessageSenderService.sendMessageOn(u.getIPAddress(), u.getPort(),"");
+                    System.out.println("message envoyé a "+u.getPseudonyme());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

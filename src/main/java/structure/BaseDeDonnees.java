@@ -144,6 +144,7 @@ public class BaseDeDonnees {
         return true;
     }
 
+
     // Lire/creer fichier "UTILISATEUR1_UTILISATEUR2.csv" et ajouter les messages historiques dans Conversation
     public static void recupererHistorique(Conversation conversation) {
 
@@ -175,7 +176,6 @@ public class BaseDeDonnees {
     }
 
     public static void sauvegarderMessage (Conversation conversation, Quadruplet data){
-
         CSVWriter writer;
         String filename = constituerFilename(conversation);
         try {
@@ -193,16 +193,13 @@ public class BaseDeDonnees {
                     +data.getHorodatage().toString();
             Files.write(Paths.get(filename), donnees.getBytes(), StandardOpenOption.APPEND);
 
-        }catch(Exception e){
-        }
-
-
+        }catch(Exception e){}
     }
 
     // Creer le nom de la fichier dans l'ordre alphabetic
     private static String constituerFilename(Conversation conversation){
-        String u1 = conversation.getSender().getPseudonyme();
-        String u2 = conversation.getReceiver().getPseudonyme();
+        String u1 = conversation.getSender().getIdentifiant();
+        String u2 = conversation.getReceiver().getIdentifiant();
         return ((u1.compareTo(u2)<0) ? u1+"_"+u2+".csv" : u2+"_"+u1+".csv");
     }
 

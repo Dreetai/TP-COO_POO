@@ -1,5 +1,7 @@
 package structure;
 
+import structure.Database.LocalDatabase;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +13,7 @@ public class Clavardage {
 
     public Clavardage(Utilisateur utilisateur) throws FileNotFoundException, IOException, InvalidCSVFileException{
 
-        this.pseudonymes = BaseDeDonnees.recupererLocalAgents();
+        this.pseudonymes = LocalDatabase.recupererLocalAgents();
     }
 
     // Pourrait changer localAgents "live", donc ajouter et supprimer les utilisateurs de la fichier quand ils

@@ -3,6 +3,7 @@ package UI.Swing;
 
 import communication.UDPMessageSenderService;
 import structure.*;
+import structure.Database.LocalDatabase;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -179,7 +180,7 @@ public class MainWindow extends JFrame {
     }
 
     public void updateUtilisateursConnectes() {
-        listeConnecte = BaseDeDonnees.recupererLocalAgents();
+        listeConnecte = LocalDatabase.recupererLocalAgents();
         utilisateurDisponibleJPanel.removeAll();
         for (Utilisateur utilisateur : listeConnecte) {
             if(!utilisateur.getIdentifiant().equals(mainUtilisateur.getIdentifiant())) {

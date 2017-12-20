@@ -2,6 +2,9 @@ package UI.Swing;
 
 import communication.UDPMessageSenderService;
 import structure.*;
+import structure.Database.LocalDatabase;
+import structure.Database.LoginDatabase;
+import structure.Database.MessageDatabase;
 
 import java.util.ArrayList;
 
@@ -18,7 +21,7 @@ public class ControleurMainWindow {
 
     public void onSendMessageButtonClicked(Conversation conversation, Quadruplet messageData) {
         if(!messageData.getMessage().equals("")){
-            BaseDeDonnees.sauvegarderMessage(conversation,messageData);
+            MessageDatabase.sauvegarderMessage(conversation,messageData);
             conversation.ajouterMessage(messageData);
             mainWindow.updateActiveConversation(conversation);
             UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
@@ -31,7 +34,7 @@ public class ControleurMainWindow {
     }
 
     public void onChangePseudonymeButtonClicked(Utilisateur user,String pseudonyme){
-        BaseDeDonnees.changerPseudonyme(user,pseudonyme);
+        LocalDatabase.changerPseudonyme(user,pseudonyme);
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
         mainWindow.updatePseudonyme(pseudonyme);
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();

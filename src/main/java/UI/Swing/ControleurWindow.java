@@ -1,7 +1,7 @@
 package UI.Swing;
 
 import communication.UDPMessageSenderService;
-import structure.BaseDeDonnees;
+import structure.Database.LocalDatabase;
 import structure.Utilisateur;
 
 import java.awt.event.*;
@@ -16,7 +16,7 @@ public class ControleurWindow extends WindowAdapter {
     }
 
     public void windowClosing(WindowEvent e) {
-        BaseDeDonnees.deleteUtilisateurLocal(this.mainWindow.getMainUtilisateur());
+        LocalDatabase.deleteUtilisateurLocal(this.mainWindow.getMainUtilisateur());
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
         ArrayList<Utilisateur> liste = mainWindow.getListeConnecte();
         try {

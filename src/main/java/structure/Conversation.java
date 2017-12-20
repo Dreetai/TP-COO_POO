@@ -2,6 +2,7 @@ package structure;
 
 import communication.UDPMessageReceiverService;
 import communication.UDPMessageSenderService;
+import structure.Database.MessageDatabase;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,13 +18,13 @@ public class Conversation {
         this.historique = new ArrayList<>();
         this.sender = utilisateur1;
         this.receiver = utilisateur2;
-        BaseDeDonnees.recupererHistorique(this);
+        MessageDatabase.recupererHistorique(this);
     }
 
     public void envoyerMessage(String message) throws Exception{
 
         Quadruplet data = new Quadruplet(message,sender.getIdentifiant(),receiver.getIdentifiant(),new Date().toString());
-        BaseDeDonnees.sauvegarderMessage(this,data);
+        MessageDatabase.sauvegarderMessage(this,data);
         UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
         udpMessageSenderService.sendMessageOn(receiver.getIPAddress(),2000,message);
     }

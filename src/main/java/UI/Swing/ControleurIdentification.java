@@ -1,7 +1,7 @@
 package UI.Swing;
 
-import structure.BaseDeDonnees;
-import structure.LoginUtilisateur;
+import structure.Database.LocalDatabase;
+import structure.Database.LoginDatabase;
 import structure.Utilisateur;
 
 import javax.swing.*;
@@ -17,9 +17,9 @@ public class ControleurIdentification {
 
     public void onConnectButtonClicked(String identifiant, String password){
         if(!identifiant.equals("") && !password.equals("")){
-            if(BaseDeDonnees.testerSiLoginOK(identifiant,password)){
-                Utilisateur user = new Utilisateur(identifiant,BaseDeDonnees.getPseudonyme(identifiant));
-                BaseDeDonnees.addUtilisateurLocal(user);
+            if(LoginDatabase.testerSiLoginOK(identifiant,password)){
+                Utilisateur user = new Utilisateur(identifiant,LoginDatabase.getPseudonyme(identifiant));
+                LocalDatabase.addUtilisateurLocal(user);
                 new MainWindow(user);
                 this.startWindow.dispose();
             }else{
@@ -34,10 +34,10 @@ public class ControleurIdentification {
 
     public void onSignUpButtonClicked(String identifiant, String password){
         if(!identifiant.equals("") && !password.equals("")){
-            if(BaseDeDonnees.testerSiAddUserOK(identifiant)){
-                BaseDeDonnees.addLoginUtilisateur(identifiant,password,identifiant);
+            if(LoginDatabase.testerSiAddUserOK(identifiant)){
+                LoginDatabase.addLoginUtilisateur(identifiant,password,identifiant);
                 Utilisateur user = new Utilisateur(identifiant);
-                BaseDeDonnees.addUtilisateurLocal(user);
+                LocalDatabase.addUtilisateurLocal(user);
                 new MainWindow(user);
                 this.startWindow.dispose();
             }else{

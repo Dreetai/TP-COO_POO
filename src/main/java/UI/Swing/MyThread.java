@@ -1,10 +1,9 @@
 package UI.Swing;
 
-import communication.IncomingMessageListener;
 import communication.UDPMessageReceiverService;
 import communication.UDPMessageSenderService;
-import structure.BaseDeDonnees;
 import structure.Conversation;
+import structure.Database.LocalDatabase;
 import structure.Utilisateur;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class MyThread extends Thread{
                     if(message.equals(""))
                         mainWindow.updateUtilisateursConnectes();
                     else{
-                        Utilisateur destinataire = BaseDeDonnees.getUtilisateur(message.split(" ")[0]);
+                        Utilisateur destinataire = LocalDatabase.getUtilisateur(message.split(" ")[0]);
                         mainWindow.updateActiveConversation(new Conversation(mainWindow.getMainUtilisateur(), destinataire));
                     }
                 });

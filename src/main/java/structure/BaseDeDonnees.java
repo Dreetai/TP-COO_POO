@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
-import sun.rmi.runtime.Log;
 
 import javax.rmi.CORBA.Util;
 
@@ -57,21 +56,16 @@ public class BaseDeDonnees {
         return null;
     }
     public static void addPseudonyme(Utilisateur user)  {
-        //CSVWriter writer= new CSVWriter(new FileWriter("pseudonyme.csv"));
-
         try {
             String utilisateurString = "\n"+user.getIdentifiant()+","+user.getPseudonyme()+","+user.getIPAddress()+","+user.getPort();
             Files.write(Paths.get("pseudonyme.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*String[] entries = {pseudonyme};
-        writer.writeNext(entries);
-        writer.close();*/
     }
 
-    public static void addLoginUtilisateur(LoginUtilisateur user) {
-        String utilisateurString = "\n"+user.getIdentifiant()+","+user.getMotDePasse()+","+user.getPseudonyme();
+    public static void addLoginUtilisateur(String identifiant,String password) {
+        String utilisateurString = "\n"+identifiant+","+password+","+identifiant;
         try {
             Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -101,11 +95,11 @@ public class BaseDeDonnees {
         }
     }
 
-    public static void updateLoginUtilisateur(Utilisateur user){
+    public static void updateLoginUtilisateur(String newPseudonyme, String identifiant){
         ArrayList<LoginUtilisateur> listeUtilisateur = recupererLoginUtilisateurs();
         LoginUtilisateur toDelete = null;
         for(LoginUtilisateur userExamine : listeUtilisateur){
-            if (userExamine.getIdentifiant().equals(user.getIdentifiant())){
+            if (userExamine.getIdentifiant().equals(identifiant)){
                 toDelete = userExamine;
             }
         }
@@ -117,7 +111,7 @@ public class BaseDeDonnees {
                 String utilisateurString = "\n"+userExamine2.getIdentifiant()+","+userExamine2.getMotDePasse()+","+userExamine2.getPseudonyme();
                 Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
             }
-            String utilisateurString = "\n"+toDelete.getIdentifiant()+","+toDelete.getMotDePasse()+","+user.getPseudonyme();
+            String utilisateurString = "\n"+toDelete.getIdentifiant()+","+toDelete.getMotDePasse()+","+newPseudonyme;
             Files.write(Paths.get("login_information.csv"), utilisateurString.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
@@ -229,7 +223,7 @@ public class BaseDeDonnees {
         deleteUtilisateur(user);
         user.setPseudonyme(pseudonyme);
         addPseudonyme(user);
-        updateLoginUtilisateur(user);
+        updateLoginUtilisateur(user.getIdentifiant(),pseudonyme);
 
     }
 }

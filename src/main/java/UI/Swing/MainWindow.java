@@ -1,7 +1,6 @@
 package UI.Swing;
 
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import communication.UDPMessageSenderService;
 import structure.*;
 

@@ -14,24 +14,11 @@ public class Conversation {
     private Utilisateur sender;
     private Utilisateur receiver;
 
-    public Conversation(Utilisateur utilisateur1,Utilisateur utilisateur2){
+    public Conversation(Utilisateur utilisateur1,Utilisateur utilisateur2) {
         this.historique = new ArrayList<>();
         this.sender = utilisateur1;
         this.receiver = utilisateur2;
         MessageDatabase.recupererHistorique(this);
-    }
-
-    public void envoyerMessage(String message) throws Exception{
-
-        Quadruplet data = new Quadruplet(message,sender.getIdentifiant(),receiver.getIdentifiant(),new Date().toString());
-        MessageDatabase.sauvegarderMessage(this,data);
-        UDPMessageSenderService udpMessageSenderService = new UDPMessageSenderService();
-        udpMessageSenderService.sendMessageOn(receiver.getIPAddress(),2000,message);
-    }
-    public void recevoirMessage(String message) throws Exception{
-        UDPMessageReceiverService udpMessageReceiverService = new UDPMessageReceiverService();
-        //udpMessageReceiverService.listenOnPort(2000);
-
     }
 
     public void ajouterMessage(Quadruplet data){

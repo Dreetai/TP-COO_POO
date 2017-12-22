@@ -1,6 +1,5 @@
 package structure;
 
-import java.io.IOException;
 
 public class Utilisateur {
     private String identifiant;
@@ -51,7 +50,7 @@ public class Utilisateur {
         return port;
     }
 
-    public static int randomWithRange(int min, int max)
+    private static int randomWithRange(int min, int max)
     {
         int range = Math.abs(max - min) + 1;
         return (int)(Math.random() * range) + (min <= max ? min : max);
